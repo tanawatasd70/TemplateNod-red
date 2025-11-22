@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Sensor Dashboard</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial;
+            background: #eef3f8;
+            padding: 20px;
+            color: #333;
+        }
+
+        .title {
+            font-size: 26px;
+            text-align: center;
+            font-weight: bold;
+            color: #2b4c7e;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .gauge-box {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .gauge {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: conic-gradient(#4e8cff var(--value), #d9d9d9 0deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .gauge-inner {
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2b4c7e;
+        }
+
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #264a6b;
+        }
+
+        .tag {
+            background: #dce8ff;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #2b4c7e;
+        }
+
+        /* LED ICONS */
+        .bulb {
+            font-size: 32px;
+            margin-right: 6px;
+        }
+
+        /* ON (glow) */
+        .bulb-on {
+            color: #ffdf2e;
+            text-shadow: 0 0 6px #ffe68a, 0 0 12px #ffea96;
+        }
+
+        /* OFF (dimmed) */
+        .bulb-off {
+            color: #bfbfbf;
+            text-shadow: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="title">📊 Sensor Monitoring Dashboard</div>
+
+    <!-- GAUGE PANEL -->
+    <div class="card">
+        <div class="section-title">🌡️ Gauge Display</div>
+
+        <div class="gauge-box">
+            <div class="gauge" id="g_temp" style="--value:0deg;">
+                <div class="gauge-inner" id="g_temp_val">0°C</div>
+            </div>
+
+            <div class="gauge" id="g_humi" style="--value:0deg;">
+                <div class="gauge-inner" id="g_humi_val">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SENSOR & LED PANEL -->
+    <div class="card">
+        <div class="section-title">📡 Sensor Data</div>
+
+        <div>อุณหภูมิ: <span class="tag">{{payload.temperature}} °C</span></div>
+        <div>ความชื้น: <span class="tag">{{payload.humidity}} %</span></div>
+
+        <div style="margin-top: 10px;">
+            LEDA:
+            <span id="ledA_icon"></span>
+        </div>
+
+        <div style="margin-top: 10px;">
+            LEDH:
+            <span id="ledH_icon"></span>
+        </div>
+    </div>
+
+    <script>
+        const temp = Number("{{payload.temperature}}");
+        const humi = Number("{{payload.humidity}}");
+
+        const leda = Number("{{payload.leda}}");
+        const ledh = Number("{{payload.ledh}}");
+
+        // Gauge %
+        document.getElementById("g_temp").style.setProperty("--value", (temp / 100) * 360 + "deg");
+        document.getElementById("g_temp_val").innerText = temp + "°C";
+
+        document.getElementById("g_humi").style.setProperty("--value", (humi / 100) * 360 + "deg");
+        document.getElementById("g_humi_val").innerText = humi + "%";
+
+        // LED Icons
+        document.getElementById("ledA_icon").innerHTML =
+            leda === 1
+                ? "<span class='bulb bulb-on'>💡</span> ON"
+                : "<span class='bulb bulb-off'>💡</span> OFF";
+
+        document.getElementById("ledH_icon").innerHTML =
+            ledh === 1
+                ? "<span class='bulb bulb-on'>💡</span> ON"
+                : "<span class='bulb bulb-off'>💡</span> OFF";
+    </script>
+
+</body>
+</html>
